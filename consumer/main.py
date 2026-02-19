@@ -2,7 +2,8 @@ import json
 
 from mongo_connection import get_conn_to_mongo
 from redis_connection import get_conn_to_redis
-
+import uuid
+import json
 import os
 import redis
 
@@ -24,6 +25,9 @@ def run():
             repo = redis_client.lpop(name="queue_urgent")
          
             if repo:
+                repo = str(repo)
+                repo = json.loads(repo)
+                repo["time_insertion"] = uuid.uuid4()
                 mongo_coll.insert_one(repo)
                 continue
                 
@@ -31,6 +35,10 @@ def run():
 
             else:
                 repo = redis_client.lpop(name="queue_normal")
+                repo = str(repo)
+                repo = json.loads(repo)
+                repo["time_insertion"] = uuid.uuid4()
+
                 mongo_coll.insert_one(repo)
                 continue
             
