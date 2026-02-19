@@ -56,10 +56,6 @@ services:
       redis:
         condition: service_healthy
 
-
-
-
-
 volumes:
   mongo_data:
   redis_data:
