@@ -1,0 +1,65 @@
+services:
+  redis:
+    image: redis:7.2-alpine
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root123
+    volumes:
+      - mongo_data:/data/db
+      
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "localhost:27017/test", "--eval", "db.runCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+
+  producer:
+    container_name: producer
+    build: ./producer
+    environment:
+      - REDIS_HOST=redis
+      # - MONGO_URL=mongodb://root:root123@mongodb:27017/
+    depends_on:
+      redis:
+        condition: service_healthy
+  
+  consumer:
+    container_name: consumer
+    build: ./consumer
+    environment:
+      - REDIS_HOST=redis
+      - MONGO_URL=mongodb://root:root123@mongodb:27017/
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+
+
+
+
+volumes:
+  mongo_data:
+  redis_data:
