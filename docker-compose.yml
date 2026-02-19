@@ -56,6 +56,21 @@ services:
       redis:
         condition: service_healthy
 
+
+  api:
+    build: ./api
+    ports:
+      - '8000:8000'
+    container_name: api
+    environment:
+      - MONGO_URL=mongodb://root:root123@mongodb:27017/
+      - REDIS_HOST=redis
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 volumes:
   mongo_data:
   redis_data:
