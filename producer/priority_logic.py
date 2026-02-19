@@ -33,15 +33,15 @@ def check_if_urgent_and_insert_to_redis(redis_client, data):
     for repo in data:
         if repo["priority"] == "URGENT":
             r = json.dumps(repo).encode("utf-8")
-            redis_client.set(name="queue_urgent",value=r)
+            redis_client.lpush(name="queue_urgent",value=r)
 
         elif repo["priority"] == "NORMAL":
             r = json.dumps(repo).encode("utf-8")
-            redis_client.set(name="queue_normal",value=r)
+            redis_client.lpush(name="queue_normal",value=r)
             
         else:
             r = json.dumps(repo).encode("utf-8")
-            redis_client.set(name="queue_normal",value=r)
+            redis_client.lpush(name="queue_normal",value=r)
 
 
 
