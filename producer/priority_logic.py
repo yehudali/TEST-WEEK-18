@@ -3,9 +3,9 @@ import json
 
 
 
-def read_csv_file():
-    path =r"data/border_alerts.json"
-    with open(path,'r') as file:
+def read_csv_file(): 
+    path =r"border_alerts.json"
+    with open("border_alerts.json",'r') as file:
         data = json.load(file)
         
         return data

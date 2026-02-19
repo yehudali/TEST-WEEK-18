@@ -6,8 +6,10 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+# COPY .  "..\data\border_alerts.json"
+
 COPY . .
 
-COPY "../data/border_alerts.json" .
+
 
 CMD ["python","main.py"]
